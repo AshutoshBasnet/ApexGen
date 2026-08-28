@@ -20,8 +20,8 @@ import java.awt.Dimension;
  * SimulationPanel renderer, and AnalyticsPanel dashboard.
  */
 public class MainGUI extends JFrame {
-    private static final int ARENA_WIDTH = 930;
-    private static final int ARENA_HEIGHT = 770;
+    private static final int ARENA_WIDTH = 950;
+    private static final int ARENA_HEIGHT = 820;
     private static final int TARGET_FPS = 60;
     private static final int TIMER_DELAY_MS = 1000 / TARGET_FPS;
 

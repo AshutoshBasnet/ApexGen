@@ -244,26 +244,54 @@ public class SimulationPanel extends JPanel {
         g2.setStroke(new BasicStroke(2.2f));
         g2.draw(new Ellipse2D.Double(x - r - 4, y - r - 4, (r + 4) * 2, (r + 4) * 2));
 
+        // Floating name tag badge above creature
+        String name = c.getName();
+        g2.setFont(new Font("SansSerif", Font.BOLD, 10));
+        int textW = g2.getFontMetrics().stringWidth(name);
+        int tagX = (int) (x - textW / 2.0);
+        int tagY = (int) (y - r - 12);
+        g2.setColor(new Color(18, 24, 38, 220));
+        g2.fillRoundRect(tagX - 4, tagY - 10, textW + 8, 14, 6, 6);
+        g2.setColor(new Color(255, 215, 0, 220));
+        g2.drawRoundRect(tagX - 4, tagY - 10, textW + 8, 14, 6, 6);
+        g2.setColor(Color.WHITE);
+        g2.drawString(name, tagX, tagY + 1);
+
         // Tooltip Info card near creature
         int tipX = (int) (x + r + 10);
-        int tipY = (int) (y - 35);
-        if (tipX + 160 > getWidth()) tipX = (int) (x - r - 170);
+        int tipY = (int) (y - 45);
+        if (tipX + 165 > getWidth()) tipX = (int) (x - r - 175);
         if (tipY < 10) tipY = 10;
 
-        g2.setColor(new Color(18, 24, 38, 225));
-        g2.fillRoundRect(tipX, tipY, 155, 80, 8, 8);
-        g2.setColor(new Color(255, 215, 0, 180));
-        g2.setStroke(new BasicStroke(1.0f));
-        g2.drawRoundRect(tipX, tipY, 155, 80, 8, 8);
+        g2.setColor(new Color(18, 24, 38, 235));
+        g2.fillRoundRect(tipX, tipY, 160, 92, 8, 8);
+        g2.setColor(new Color(255, 215, 0, 200));
+        g2.setStroke(new BasicStroke(1.2f));
+        g2.drawRoundRect(tipX, tipY, 160, 92, 8, 8);
 
+        // Header: Name & Rank
+        g2.setColor(new Color(255, 215, 0));
+        g2.setFont(new Font("SansSerif", Font.BOLD, 11));
+        g2.drawString(c.getName(), tipX + 8, tipY + 15);
+
+        // Stats
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("SansSerif", Font.BOLD, 10));
-        g2.drawString(String.format("Fitness: %.1f", c.getFitness()), tipX + 8, tipY + 14);
+        g2.drawString(String.format("Fitness: %.1f", c.getFitness()), tipX + 8, tipY + 31);
         g2.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        g2.drawString(String.format("Food: %d | Age: %d yrs", c.getFoodEaten(), c.getSurvivalTicks()), tipX + 8, tipY + 28);
-        g2.drawString(String.format("Energy: %.1f / %.1f", c.getEnergy(), c.getMaxEnergy()), tipX + 8, tipY + 42);
+        g2.drawString(String.format("Food: %d | Age: %d yrs", c.getFoodEaten(), c.getSurvivalTicks()), tipX + 8, tipY + 46);
+        g2.drawString(String.format("Energy: %.1f / %.1f", c.getEnergy(), c.getMaxEnergy()), tipX + 8, tipY + 61);
         Genome g = c.getGenome();
-        g2.drawString(String.format("Spd: %.0f | Siz: %.0f | Str: %.0f", g.getSpeed(), g.getSize(), g.getStrength()), tipX + 8, tipY + 56);
+        g2.drawString(String.format("Spd: %.0f | Siz: %.0f | Str: %.0f", g.getSpeed(), g.getSize(), g.getStrength()), tipX + 8, tipY + 76);
+    }
+
+    public void setSelectedCreature(Creature c) {
+        this.selectedCreature = c;
+        repaint();
+    }
+
+    public Creature getSelectedCreature() {
+        return selectedCreature;
     }
 
     // Toggle setters

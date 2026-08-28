@@ -17,6 +17,7 @@ public class Creature implements PointItem, Comparable<Creature> {
     private double vy;
     private double wanderAngle;
 
+    private final String name;
     private final Genome genome;
     private double energy;
     private final double maxEnergy;
@@ -30,14 +31,16 @@ public class Creature implements PointItem, Comparable<Creature> {
     public static final double SENSORY_RADIUS = 120.0;
 
     /**
-     * Constructs a new Creature with a given genome and starting coordinates.
+     * Constructs a new Creature with a designated name, genome, and starting coordinates.
      *
+     * @param name   Designation name (e.g. "Apex-A")
      * @param x      Initial X position
      * @param y      Initial Y position
      * @param genome Genetic configuration
      * @param rng    Random instance for initial angle
      */
-    public Creature(double x, double y, Genome genome, Random rng) {
+    public Creature(String name, double x, double y, Genome genome, Random rng) {
+        this.name = name != null ? name : "Apex-Unknown";
         this.x = x;
         this.y = y;
         this.genome = genome;
@@ -59,6 +62,10 @@ public class Creature implements PointItem, Comparable<Creature> {
         this.wanderAngle = rng.nextDouble() * Math.PI * 2.0;
         this.vx = Math.cos(wanderAngle) * actualSpeed;
         this.vy = Math.sin(wanderAngle) * actualSpeed;
+    }
+
+    public Creature(double x, double y, Genome genome, Random rng) {
+        this("Apex-0", x, y, genome, rng);
     }
 
     /**
@@ -216,6 +223,10 @@ public class Creature implements PointItem, Comparable<Creature> {
     }
 
     // Getters
+    public String getName() {
+        return name;
+    }
+
     public Genome getGenome() {
         return genome;
     }

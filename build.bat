@@ -5,7 +5,7 @@ echo ===================================================
 
 if not exist bin mkdir bin
 
-javac -d bin -sourcepath src src/com/evolution/model/*.java src/com/evolution/spatial/*.java src/com/evolution/engine/*.java src/com/evolution/ui/*.java src/com/evolution/test/*.java
+javac -encoding UTF-8 -d bin -sourcepath src src/com/evolution/model/*.java src/com/evolution/spatial/*.java src/com/evolution/engine/*.java src/com/evolution/ui/*.java src/com/evolution/test/*.java
 
 if %ERRORLEVEL% equ 0 (
     echo [SUCCESS] Compilation complete. Output in bin/

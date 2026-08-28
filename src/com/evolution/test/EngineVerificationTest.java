@@ -213,5 +213,11 @@ public class EngineVerificationTest {
         EvolutionStats lastGen = history.get(history.size() - 1);
         assertTrue("Generation stats averages are positive numbers",
             lastGen.getAvgSpeed() > 0 && lastGen.getAvgSize() > 0 && lastGen.getAvgStrength() > 0);
+
+        List<Creature> top3 = engine.getTopCreatures(3);
+        assertTrue("Top 3 champions extracted via Max-Heap", !top3.isEmpty() && top3.size() <= 3);
+        if (top3.size() >= 2) {
+            assertTrue("Top 1 champion has >= fitness than Top 2", top3.get(0).getFitness() >= top3.get(1).getFitness());
+        }
     }
 }

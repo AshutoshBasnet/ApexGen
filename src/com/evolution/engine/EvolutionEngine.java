@@ -78,6 +78,22 @@ public class EvolutionEngine {
     /**
      * Initializes or resets the simulation to Generation 1 with randomized genomes.
      */
+    /**
+     * Generates clean spreadsheet-style alphabetical names: Apex-A, Apex-B ... Apex-Z, Apex-AA, Apex-AB...
+     */
+    public static String getAlphabeticalName(int index) {
+        StringBuilder sb = new StringBuilder();
+        int n = index;
+        while (n >= 0) {
+            sb.insert(0, (char) ('A' + (n % 26)));
+            n = (n / 26) - 1;
+        }
+        return "Apex-" + sb.toString();
+    }
+
+    /**
+     * Initializes the simulation state with a fresh randomized population and food.
+     */
     public synchronized void initializeSimulation() {
         creatures.clear();
         foods.clear();
@@ -85,12 +101,12 @@ public class EvolutionEngine {
         currentGeneration = 1;
         currentTick = 0;
 
-        // Initialize randomized population
+        // Initialize randomized population with alphabetical names
         for (int i = 0; i < populationSize; i++) {
             double x = 40.0 + rng.nextDouble() * (arenaWidth - 80.0);
             double y = 40.0 + rng.nextDouble() * (arenaHeight - 80.0);
             Genome genome = Genome.createRandom(rng);
-            creatures.add(new Creature(x, y, genome, rng));
+            creatures.add(new Creature(getAlphabeticalName(i), x, y, genome, rng));
         }
 
         spawnFood(initialFoodCount);
@@ -187,7 +203,7 @@ public class EvolutionEngine {
             Genome eliteGenome = new Genome(elite.getGenome());
             double x = 40.0 + rng.nextDouble() * (arenaWidth - 80.0);
             double y = 40.0 + rng.nextDouble() * (arenaHeight - 80.0);
-            nextGeneration.add(new Creature(x, y, eliteGenome, rng));
+            nextGeneration.add(new Creature(getAlphabeticalName(nextGeneration.size()), x, y, eliteGenome, rng));
         }
 
         // --- DSA 2: ROULETTE WHEEL SELECTION (Prefix Sums + Binary Search) ---
@@ -212,7 +228,7 @@ public class EvolutionEngine {
 
             double x = 40.0 + rng.nextDouble() * (arenaWidth - 80.0);
             double y = 40.0 + rng.nextDouble() * (arenaHeight - 80.0);
-            nextGeneration.add(new Creature(x, y, childGenome, rng));
+            nextGeneration.add(new Creature(getAlphabeticalName(nextGeneration.size()), x, y, childGenome, rng));
         }
 
         // Replace current population with next generation
@@ -419,5 +435,19 @@ public class EvolutionEngine {
 
     public double getMutationScale() {
         return mutationScale;
+    }
+
+    /**
+     * Extracts the top K creatures by fitness from the current generation using a Max-Heap PriorityQueue in O(N log K).
+     */
+    public synchronized List<Creature> getTopCreatures(int k) {
+        PriorityQueue<Creature> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        maxHeap.addAll(creatures);
+        List<Creature> topList = new ArrayList<>();
+        int count = Math.min(k, maxHeap.size());
+        for (int i = 0; i < count; i++) {
+            topList.add(maxHeap.poll());
+        }
+        return topList;
     }
 }

@@ -2,6 +2,7 @@ package com.evolution.ui;
 
 import com.evolution.engine.EvolutionEngine;
 import com.evolution.engine.EvolutionStats;
+import com.evolution.model.Creature;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -48,6 +49,13 @@ public class AnalyticsPanel extends JPanel {
     private final TraitMeter sizeMeter;
     private final TraitMeter strengthMeter;
 
+    // Top 3 Champions Leaderboard (Max-Heap)
+    private final JLabel[] leaderRankLabels = new JLabel[3];
+    private final JLabel[] leaderNameLabels = new JLabel[3];
+    private final JLabel[] leaderFitLabels = new JLabel[3];
+    private final JLabel[] leaderStatusLabels = new JLabel[3];
+    private final JPanel[] leaderRows = new JPanel[3];
+
     // Real-Time Drift Graph
     private final EvolutionChartPanel chartPanel;
 
@@ -70,6 +78,7 @@ public class AnalyticsPanel extends JPanel {
     private static final Color ACCENT_BLUE = new Color(59, 130, 246);
     private static final Color ACCENT_GREEN = new Color(34, 197, 94);
     private static final Color ACCENT_RED = new Color(239, 68, 68);
+    private static final Color ACCENT_GOLD = new Color(255, 215, 0);
 
     public AnalyticsPanel(EvolutionEngine engine, SimulationPanel simulationPanel, MainGUI mainGUI) {
         this.engine = engine;
@@ -78,7 +87,7 @@ public class AnalyticsPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(BG_DARK);
-        setPreferredSize(new Dimension(380, 740));
+        setPreferredSize(new Dimension(380, 800));
         setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
 
         // 1. Header Section
@@ -121,7 +130,92 @@ public class AnalyticsPanel extends JPanel {
         add(lifecycleWrapper);
         add(Box.createVerticalStrut(6));
 
-        // 3. Trait Averages Card (Live Genetic Drift)
+        // 3. Top 3 Champions Leaderboard Card (Max-Heap)
+        JPanel leaderboardCard = createCardPanel();
+        leaderboardCard.setLayout(new BoxLayout(leaderboardCard, BoxLayout.Y_AXIS));
+
+        JPanel titleRow = new JPanel(new BorderLayout());
+        titleRow.setOpaque(false);
+        JLabel leaderTitle = new JLabel("Top 3 Champions (Max-Heap)");
+        leaderTitle.setFont(new Font("SansSerif", Font.BOLD, 11));
+        leaderTitle.setForeground(ACCENT_GOLD);
+        leaderTitle.setBorder(BorderFactory.createEmptyBorder(0, 2, 4, 2));
+        titleRow.add(leaderTitle, BorderLayout.WEST);
+        leaderboardCard.add(titleRow);
+
+        for (int i = 0; i < 3; i++) {
+            JPanel row = new JPanel(new BorderLayout(8, 0));
+            row.setBackground(new Color(20, 26, 38));
+            row.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(42, 54, 76), 1),
+                BorderFactory.createEmptyBorder(4, 8, 4, 8)
+            ));
+            row.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+            // Left sub-panel: Rank + Name
+            JPanel leftSub = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+            leftSub.setOpaque(false);
+
+            String rankStr = String.format("#%d", i + 1);
+            JLabel rankLbl = new JLabel(rankStr);
+            rankLbl.setFont(new Font("SansSerif", Font.BOLD, 11));
+            rankLbl.setForeground(ACCENT_GOLD);
+            rankLbl.setPreferredSize(new Dimension(20, 16));
+
+            JLabel nameLbl = new JLabel("Apex-?");
+            nameLbl.setFont(new Font("SansSerif", Font.BOLD, 11));
+            nameLbl.setForeground(TEXT_WHITE);
+            nameLbl.setPreferredSize(new Dimension(75, 16));
+
+            leftSub.add(rankLbl);
+            leftSub.add(nameLbl);
+
+            // Right sub-panel: Fitness + Status
+            JPanel rightSub = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+            rightSub.setOpaque(false);
+
+            JLabel fitLbl = new JLabel("Fit: 0.0");
+            fitLbl.setFont(new Font("SansSerif", Font.PLAIN, 11));
+            fitLbl.setForeground(new Color(56, 189, 248)); // Light cyan
+
+            JLabel statusLbl = new JLabel("Alive", SwingConstants.RIGHT);
+            statusLbl.setFont(new Font("SansSerif", Font.BOLD, 10));
+            statusLbl.setForeground(ACCENT_GREEN);
+            statusLbl.setPreferredSize(new Dimension(42, 16));
+
+            rightSub.add(fitLbl);
+            rightSub.add(statusLbl);
+
+            row.add(leftSub, BorderLayout.WEST);
+            row.add(rightSub, BorderLayout.EAST);
+
+            final int rankIndex = i;
+            row.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    List<Creature> top = engine.getTopCreatures(3);
+                    if (rankIndex < top.size()) {
+                        simulationPanel.setSelectedCreature(top.get(rankIndex));
+                    }
+                }
+            });
+
+            leaderRankLabels[i] = rankLbl;
+            leaderNameLabels[i] = nameLbl;
+            leaderFitLabels[i] = fitLbl;
+            leaderStatusLabels[i] = statusLbl;
+            leaderRows[i] = row;
+
+            leaderboardCard.add(row);
+            if (i < 2) {
+                leaderboardCard.add(Box.createVerticalStrut(4));
+            }
+        }
+
+        add(leaderboardCard);
+        add(Box.createVerticalStrut(6));
+
+        // 4. Trait Averages Card (Live Genetic Drift)
         JPanel traitCard = createCardPanel();
         traitCard.setLayout(new BoxLayout(traitCard, BoxLayout.Y_AXIS));
 
@@ -144,13 +238,13 @@ public class AnalyticsPanel extends JPanel {
         add(traitCard);
         add(Box.createVerticalStrut(6));
 
-        // 4. Evolutionary Drift Line Graph
+        // 5. Evolutionary Drift Line Graph
         chartPanel = new EvolutionChartPanel(engine);
-        chartPanel.setPreferredSize(new Dimension(350, 160));
+        chartPanel.setPreferredSize(new Dimension(350, 150));
         add(chartPanel);
         add(Box.createVerticalStrut(6));
 
-        // 5. Visual Overlays Card
+        // 6. Visual Overlays Card
         JPanel overlayCard = createCardPanel();
         overlayCard.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 2));
 
@@ -167,7 +261,7 @@ public class AnalyticsPanel extends JPanel {
         add(overlayCard);
         add(Box.createVerticalStrut(6));
 
-        // 6. Interactive Controls Panel
+        // 7. Interactive Controls Panel
         JPanel controlsCard = createCardPanel();
         controlsCard.setLayout(new BoxLayout(controlsCard, BoxLayout.Y_AXIS));
 
@@ -242,6 +336,29 @@ public class AnalyticsPanel extends JPanel {
 
         tickProgressBar.setMaximum(engine.getMaxTicksPerGeneration());
         tickProgressBar.setValue(engine.getCurrentTick());
+
+        // Update Top 3 Champions Leaderboard (Max-Heap query in O(N log K))
+        List<Creature> topLeaders = engine.getTopCreatures(3);
+        for (int i = 0; i < 3; i++) {
+            if (i < topLeaders.size()) {
+                Creature c = topLeaders.get(i);
+                leaderNameLabels[i].setText(c.getName());
+                leaderFitLabels[i].setText(String.format("Fit: %.1f", c.getFitness()));
+                if (c.isAlive()) {
+                    leaderStatusLabels[i].setText("Alive");
+                    leaderStatusLabels[i].setForeground(ACCENT_GREEN);
+                } else {
+                    leaderStatusLabels[i].setText("Dead");
+                    leaderStatusLabels[i].setForeground(ACCENT_RED);
+                }
+                leaderRows[i].setVisible(true);
+            } else {
+                leaderNameLabels[i].setText("---");
+                leaderFitLabels[i].setText("Fit: 0.0");
+                leaderStatusLabels[i].setText("---");
+                leaderStatusLabels[i].setForeground(TEXT_MUTED);
+            }
+        }
 
         speedMeter.setValue(engine.getAvgSpeed());
         sizeMeter.setValue(engine.getAvgSize());

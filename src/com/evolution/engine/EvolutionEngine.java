@@ -59,7 +59,7 @@ public class EvolutionEngine {
 
         this.populationSize = 75;
         this.initialFoodCount = 160;
-        this.maxTicksPerGeneration = 600;
+        this.maxTicksPerGeneration = 300;
         this.elitismRatio = 0.05; // Top 5%
         this.mutationRate = 0.12;  // 12% per gene
         this.mutationScale = 8.0;

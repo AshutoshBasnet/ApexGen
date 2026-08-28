@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -26,7 +27,7 @@ import java.awt.RenderingHints;
 import java.util.List;
 
 /**
- * Analytics and Control Dashboard.
+ * Analytics and Control Dashboard for ApexGen.
  * Displays real-time simulation metrics, genetic trait meters,
  * an evolutionary drift line graph, and interactive controls.
  */
@@ -51,9 +52,9 @@ public class AnalyticsPanel extends JPanel {
     private final EvolutionChartPanel chartPanel;
 
     // Controls
-    private final JButton playPauseBtn;
-    private final JButton stepBtn;
-    private final JButton restartBtn;
+    private final ModernButton playPauseBtn;
+    private final ModernButton stepBtn;
+    private final ModernButton restartBtn;
     private final JSlider speedSlider;
     private final JLabel speedValueLabel;
 
@@ -77,26 +78,26 @@ public class AnalyticsPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(BG_DARK);
-        setPreferredSize(new Dimension(380, 800));
-        setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        setPreferredSize(new Dimension(380, 740));
+        setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
 
         // 1. Header Section
         JPanel headerPanel = createCardPanel();
         headerPanel.setLayout(new BorderLayout());
-        JLabel titleLabel = new JLabel("Evolution Analytics HUD");
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        JLabel titleLabel = new JLabel("ApexGen Analytics HUD");
+        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
         titleLabel.setForeground(TEXT_WHITE);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(2, 6, 2, 6));
         headerPanel.add(titleLabel, BorderLayout.WEST);
         add(headerPanel);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(6));
 
         // 2. Generation & Lifecycle Metrics Card
         JPanel statsCard = createCardPanel();
-        statsCard.setLayout(new GridLayout(2, 2, 8, 8));
+        statsCard.setLayout(new GridLayout(2, 2, 6, 6));
 
         genLabel = createMetricLabel("Gen: 1", ACCENT_BLUE);
-        tickLabel = createMetricLabel("Tick: 0 / 600", TEXT_WHITE);
+        tickLabel = createMetricLabel("Year: 0 / 300", TEXT_WHITE);
         aliveLabel = createMetricLabel("Alive: 75 / 75", ACCENT_GREEN);
         foodLabel = createMetricLabel("Food: 160", TEXT_WHITE);
 
@@ -113,21 +114,21 @@ public class AnalyticsPanel extends JPanel {
         tickProgressBar.setValue(0);
         tickProgressBar.setForeground(ACCENT_BLUE);
         tickProgressBar.setBackground(new Color(15, 20, 30));
-        tickProgressBar.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
-        tickProgressBar.setPreferredSize(new Dimension(350, 10));
+        tickProgressBar.setBorder(BorderFactory.createEmptyBorder(2, 6, 2, 6));
+        tickProgressBar.setPreferredSize(new Dimension(350, 8));
         lifecycleWrapper.add(tickProgressBar);
 
         add(lifecycleWrapper);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(6));
 
         // 3. Trait Averages Card (Live Genetic Drift)
         JPanel traitCard = createCardPanel();
         traitCard.setLayout(new BoxLayout(traitCard, BoxLayout.Y_AXIS));
 
         JLabel traitTitle = new JLabel("Population Trait Averages (BMR Trade-offs)");
-        traitTitle.setFont(new Font("SansSerif", Font.BOLD, 12));
+        traitTitle.setFont(new Font("SansSerif", Font.BOLD, 11));
         traitTitle.setForeground(TEXT_MUTED);
-        traitTitle.setBorder(BorderFactory.createEmptyBorder(2, 4, 8, 4));
+        traitTitle.setBorder(BorderFactory.createEmptyBorder(2, 4, 6, 4));
         traitCard.add(traitTitle);
 
         speedMeter = new TraitMeter("Speed", ACCENT_BLUE);
@@ -135,23 +136,23 @@ public class AnalyticsPanel extends JPanel {
         strengthMeter = new TraitMeter("Strength", ACCENT_RED);
 
         traitCard.add(speedMeter);
-        traitCard.add(Box.createVerticalStrut(6));
+        traitCard.add(Box.createVerticalStrut(4));
         traitCard.add(sizeMeter);
-        traitCard.add(Box.createVerticalStrut(6));
+        traitCard.add(Box.createVerticalStrut(4));
         traitCard.add(strengthMeter);
 
         add(traitCard);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(6));
 
         // 4. Evolutionary Drift Line Graph
         chartPanel = new EvolutionChartPanel(engine);
-        chartPanel.setPreferredSize(new Dimension(350, 180));
+        chartPanel.setPreferredSize(new Dimension(350, 160));
         add(chartPanel);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(6));
 
         // 5. Visual Overlays Card
         JPanel overlayCard = createCardPanel();
-        overlayCard.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 4));
+        overlayCard.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 2));
 
         quadTreeCheck = new JCheckBox("QuadTree Grid", simulationPanel.isShowQuadTree());
         styleCheckBox(quadTreeCheck);
@@ -164,26 +165,26 @@ public class AnalyticsPanel extends JPanel {
         overlayCard.add(quadTreeCheck);
         overlayCard.add(energyBarCheck);
         add(overlayCard);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(6));
 
         // 6. Interactive Controls Panel
         JPanel controlsCard = createCardPanel();
         controlsCard.setLayout(new BoxLayout(controlsCard, BoxLayout.Y_AXIS));
 
-        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 4));
+        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 2));
         buttonRow.setOpaque(false);
 
-        playPauseBtn = createStyledButton("Pause", ACCENT_BLUE);
+        playPauseBtn = new ModernButton("Pause", ACCENT_BLUE);
         playPauseBtn.addActionListener(e -> togglePlayPause());
 
-        stepBtn = createStyledButton("Step 1x", new Color(75, 85, 105));
+        stepBtn = new ModernButton("Step 1x", new Color(75, 85, 105));
         stepBtn.addActionListener(e -> {
             engine.update();
             simulationPanel.repaint();
             updateHUD();
         });
 
-        restartBtn = createStyledButton("Restart", new Color(185, 28, 28));
+        restartBtn = new ModernButton("Restart", new Color(185, 28, 28));
         restartBtn.addActionListener(e -> {
             engine.initializeSimulation();
             chartPanel.repaint();
@@ -206,7 +207,7 @@ public class AnalyticsPanel extends JPanel {
         speedSlider = new JSlider(1, 10, 1);
         speedSlider.setBackground(CARD_BG);
         speedSlider.setForeground(ACCENT_BLUE);
-        speedSlider.setPreferredSize(new Dimension(140, 25));
+        speedSlider.setPreferredSize(new Dimension(140, 22));
 
         speedValueLabel = new JLabel("1x");
         speedValueLabel.setForeground(TEXT_WHITE);
@@ -230,12 +231,12 @@ public class AnalyticsPanel extends JPanel {
         boolean isRunning = !engine.isRunning();
         engine.setRunning(isRunning);
         playPauseBtn.setText(isRunning ? "Pause" : "Play");
-        playPauseBtn.setBackground(isRunning ? ACCENT_BLUE : ACCENT_GREEN);
+        playPauseBtn.setBgColor(isRunning ? ACCENT_BLUE : ACCENT_GREEN);
     }
 
     public void updateHUD() {
         genLabel.setText(String.format("Gen: %d", engine.getCurrentGeneration()));
-        tickLabel.setText(String.format("Tick: %d / %d", engine.getCurrentTick(), engine.getMaxTicksPerGeneration()));
+        tickLabel.setText(String.format("Year: %d / %d", engine.getCurrentTick(), engine.getMaxTicksPerGeneration()));
         aliveLabel.setText(String.format("Alive: %d / %d", engine.getAliveCount(), engine.getCreatures().size()));
         foodLabel.setText(String.format("Food: %d", engine.getFoodCount()));
 
@@ -254,29 +255,19 @@ public class AnalyticsPanel extends JPanel {
         panel.setBackground(CARD_BG);
         panel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(45, 60, 85), 1),
-            BorderFactory.createEmptyBorder(8, 8, 8, 8)
+            BorderFactory.createEmptyBorder(6, 8, 6, 8)
         ));
         return panel;
     }
 
     private JLabel createMetricLabel(String text, Color accent) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);
-        label.setFont(new Font("SansSerif", Font.BOLD, 13));
+        label.setFont(new Font("SansSerif", Font.BOLD, 12));
         label.setForeground(accent);
         label.setOpaque(true);
         label.setBackground(new Color(18, 24, 38));
-        label.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+        label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         return label;
-    }
-
-    private JButton createStyledButton(String text, Color bg) {
-        JButton btn = new JButton(text);
-        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
-        btn.setForeground(Color.WHITE);
-        btn.setBackground(bg);
-        btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
-        return btn;
     }
 
     private void styleCheckBox(JCheckBox cb) {
@@ -284,6 +275,50 @@ public class AnalyticsPanel extends JPanel {
         cb.setForeground(TEXT_WHITE);
         cb.setFont(new Font("SansSerif", Font.PLAIN, 11));
         cb.setFocusPainted(false);
+    }
+
+    /**
+     * Modern custom-painted dark button that reliably works across all Look & Feels.
+     */
+    private static class ModernButton extends JButton {
+        private Color bgColor;
+
+        public ModernButton(String text, Color bg) {
+            super(text);
+            this.bgColor = bg;
+            setFont(new Font("SansSerif", Font.BOLD, 12));
+            setForeground(Color.WHITE);
+            setContentAreaFilled(false);
+            setFocusPainted(false);
+            setBorderPainted(false);
+            setOpaque(false);
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+            setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
+        }
+
+        public void setBgColor(Color bg) {
+            this.bgColor = bg;
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            Color currentBg = bgColor;
+            if (getModel().isPressed()) {
+                currentBg = bgColor.darker();
+            } else if (getModel().isRollover()) {
+                currentBg = bgColor.brighter();
+            }
+
+            g2.setColor(currentBg);
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 8, 8);
+            g2.dispose();
+
+            super.paintComponent(g);
+        }
     }
 
     /**
@@ -299,7 +334,7 @@ public class AnalyticsPanel extends JPanel {
             this.traitColor = traitColor;
             this.value = 50.0;
             setOpaque(false);
-            setPreferredSize(new Dimension(320, 22));
+            setPreferredSize(new Dimension(320, 20));
         }
 
         public void setValue(double value) {
@@ -320,17 +355,17 @@ public class AnalyticsPanel extends JPanel {
             g2.setColor(TEXT_WHITE);
             g2.setFont(new Font("SansSerif", Font.PLAIN, 11));
             String nameStr = String.format("%-8s", traitName);
-            g2.drawString(nameStr, 2, h - 6);
+            g2.drawString(nameStr, 2, h - 5);
 
             // Value text
             String valStr = String.format("%.1f", value);
             g2.setFont(new Font("SansSerif", Font.BOLD, 11));
-            g2.drawString(valStr, 70, h - 6);
+            g2.drawString(valStr, 70, h - 5);
 
             // Bar background
             int barX = 110;
             int barW = w - barX - 5;
-            int barH = 10;
+            int barH = 8;
             int barY = (h - barH) / 2;
 
             g2.setColor(new Color(15, 20, 30));
@@ -355,7 +390,7 @@ public class AnalyticsPanel extends JPanel {
             setBackground(CARD_BG);
             setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(45, 60, 85), 1),
-                BorderFactory.createEmptyBorder(6, 6, 6, 6)
+                BorderFactory.createEmptyBorder(5, 6, 5, 6)
             ));
         }
 
@@ -384,9 +419,9 @@ public class AnalyticsPanel extends JPanel {
 
             List<EvolutionStats> history = engine.getStatsHistory();
             int plotX = 30;
-            int plotY = 28;
+            int plotY = 26;
             int plotW = w - 42;
-            int plotH = h - 45;
+            int plotH = h - 40;
 
             // Grid lines
             g2.setColor(new Color(30, 42, 60));
@@ -453,3 +488,4 @@ public class AnalyticsPanel extends JPanel {
         }
     }
 }
+

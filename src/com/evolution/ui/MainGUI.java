@@ -20,8 +20,8 @@ import java.awt.Dimension;
  * SimulationPanel renderer, and AnalyticsPanel dashboard.
  */
 public class MainGUI extends JFrame {
-    private static final int ARENA_WIDTH = 920;
-    private static final int ARENA_HEIGHT = 760;
+    private static final int ARENA_WIDTH = 930;
+    private static final int ARENA_HEIGHT = 770;
     private static final int TARGET_FPS = 60;
     private static final int TIMER_DELAY_MS = 1000 / TARGET_FPS;
 
@@ -150,7 +150,7 @@ public class MainGUI extends JFrame {
     private void showAboutDialog() {
         JOptionPane.showMessageDialog(this,
             "<html><body style='width: 340px; font-family: sans-serif;'>"
-            + "<h2>Natural Selection & Evolution Simulator</h2>"
+            + "<h2>ApexGen: Natural Selection Simulator</h2>"
             + "<p>Built in 100% pure standard Java (Swing/AWT) demonstrating core Data Structures and Algorithms.</p>"
             + "<p><b>Features:</b></p>"
             + "<ul>"
@@ -160,7 +160,7 @@ public class MainGUI extends JFrame {
             + "<li>Real-time evolutionary drift line chart</li>"
             + "</ul>"
             + "</body></html>",
-            "About",
+            "About ApexGen",
             JOptionPane.INFORMATION_MESSAGE);
     }
 

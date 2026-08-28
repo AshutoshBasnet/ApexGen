@@ -260,7 +260,7 @@ public class SimulationPanel extends JPanel {
         g2.setFont(new Font("SansSerif", Font.BOLD, 10));
         g2.drawString(String.format("Fitness: %.1f", c.getFitness()), tipX + 8, tipY + 14);
         g2.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        g2.drawString(String.format("Food: %d | Age: %d", c.getFoodEaten(), c.getSurvivalTicks()), tipX + 8, tipY + 28);
+        g2.drawString(String.format("Food: %d | Age: %d yrs", c.getFoodEaten(), c.getSurvivalTicks()), tipX + 8, tipY + 28);
         g2.drawString(String.format("Energy: %.1f / %.1f", c.getEnergy(), c.getMaxEnergy()), tipX + 8, tipY + 42);
         Genome g = c.getGenome();
         g2.drawString(String.format("Spd: %.0f | Siz: %.0f | Str: %.0f", g.getSpeed(), g.getSize(), g.getStrength()), tipX + 8, tipY + 56);

@@ -5,7 +5,6 @@
 ![Java](https://img.shields.io/badge/Java-17%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=github-actions&logoColor=white)
 ![Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Java)-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)
 ![DSA](https://img.shields.io/badge/Focus-Data%20Structures%20%26%20Algorithms-orange?style=for-the-badge)
 
 **A high-performance biological evolution and natural selection simulation engine powered by custom Data Structures & Algorithms.**
@@ -159,9 +158,3 @@ ApexGen/
 ├── run.bat                                   # Windows launch script
 └── README.md                                 # Project documentation
 ```
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License**.
